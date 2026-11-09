@@ -1,0 +1,7 @@
+.build/
+build/
+.claude/
+.superpowers/
+.DS_Store
+.swiftpm/
+xcuserdata/

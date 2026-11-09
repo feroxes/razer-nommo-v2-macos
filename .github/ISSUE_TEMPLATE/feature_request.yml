@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an improvement or support for another speaker.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do?
+      description: Describe what you're trying to achieve and why the current version doesn't cover it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How you imagine it working in the app or the CLI.
+  - type: input
+    id: speaker
+    attributes:
+      label: Speaker model
+      description: Only needed for hardware-related requests.
+      placeholder: "Nommo V2"
