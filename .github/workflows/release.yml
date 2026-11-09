@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Show toolchain
+        run: swift --version
+
+      - name: Test
+        run: swift test
+
+      - name: Build app and CLI
+        run: scripts/build-app.sh
+
+      - name: Check architectures and SDK
+        env:
+          ARCHITECTURES: arm64 x86_64
+          MINIMUM_SDK_MAJOR: "26"
+        run: |
+          for BINARY in "build/Nommo Control.app/Contents/MacOS/NommoControl" build/nommo; do
+            lipo -info "$BINARY"
+            for ARCH in $ARCHITECTURES; do
+              if ! lipo "$BINARY" -verify_arch "$ARCH"; then
+                echo "::error::$BINARY has no $ARCH slice."
+                exit 1
+              fi
+              SDK="$(vtool -arch "$ARCH" -show-build "$BINARY" | awk '$1 == "sdk" { print $2 }')"
+              if [ -z "$SDK" ] || [ "${SDK%%.*}" -lt "$MINIMUM_SDK_MAJOR" ]; then
+                echo "::error::The $ARCH slice of $BINARY records SDK '$SDK', expected $MINIMUM_SDK_MAJOR or later."
+                exit 1
+              fi
+              echo "$BINARY ($ARCH): SDK $SDK"
+            done
+          done
+
+      - name: Check versions match the tag
+        run: |
+          VERSION="${TAG#v}"
+          APP_VERSION="$(plutil -extract CFBundleShortVersionString raw "build/Nommo Control.app/Contents/Info.plist")"
+          CLI_VERSION="$(build/nommo --version)"
+          if [ "$APP_VERSION" != "$VERSION" ]; then
+            echo "::error::The app version is $APP_VERSION, expected $VERSION."
+            exit 1
+          fi
+          if [ "$CLI_VERSION" != "nommo $VERSION" ]; then
+            echo "::error::nommo --version prints '$CLI_VERSION', expected 'nommo $VERSION'."
+            exit 1
+          fi
+
+      - name: Write checksums
+        working-directory: build
+        run: shasum -a 256 NommoControl-*.zip nommo-*.zip > SHA256SUMS.txt
+
+      - name: Write release notes
+        run: scripts/release-notes.sh "${TAG#v}" > build/release-notes.md
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRERELEASE: ${{ contains(github.ref_name, '-') }}
+        run: |
+          if grep -q '[^[:space:]]' build/release-notes.md; then
+            NOTES_OPTION="--notes-file=build/release-notes.md"
+          else
+            NOTES_OPTION="--generate-notes"
+          fi
+          gh release create "$TAG" \
+            build/NommoControl-*.zip build/nommo-*.zip build/SHA256SUMS.txt \
+            --verify-tag \
+            --prerelease="$PRERELEASE" \
+            --title "Nommo Control ${TAG#v}" \
+            "$NOTES_OPTION"
