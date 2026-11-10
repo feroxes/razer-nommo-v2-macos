@@ -9,6 +9,10 @@ enum SpeakerCommand: Equatable, Sendable {
     case enterFrameMode
     case fillFrame(LightColor)
     case resumeAnimation
+    case readPowerSaving
+    case writePowerSaving(Bool)
+    case readPowerOffDelay
+    case writePowerOffDelay(PowerOffDelay)
 
     var frame: CommandFrame {
         switch self {
@@ -33,11 +37,24 @@ enum SpeakerCommand: Equatable, Sendable {
             return lighting(CommandCode.fillFrameID, CommandCode.fillFrameSize, CommandCode.fillFramePrefix + pixels)
         case .resumeAnimation:
             return lighting(CommandCode.animationID, CommandCode.animationSize, CommandCode.resumeAnimationArguments)
+        case .readPowerSaving:
+            return power(CommandCode.readPowerSavingID, CommandCode.powerSavingSize)
+        case .writePowerSaving(let isEnabled):
+            let state = isEnabled ? CommandCode.switchOn : CommandCode.switchOff
+            return power(CommandCode.writePowerSavingID, CommandCode.powerSavingSize, [CommandCode.zeroByte, state])
+        case .readPowerOffDelay:
+            return power(CommandCode.readPowerOffDelayID, CommandCode.powerOffDelaySize)
+        case .writePowerOffDelay(let delay):
+            return power(CommandCode.writePowerOffDelayID, CommandCode.powerOffDelaySize, delay.bytes)
         }
     }
 
     private func audio(_ id: UInt8, _ size: UInt8, _ arguments: [UInt8] = []) -> CommandFrame {
         CommandFrame(commandClass: CommandCode.audioClass, commandID: id, size: size, arguments: arguments)
+    }
+
+    private func power(_ id: UInt8, _ size: UInt8, _ arguments: [UInt8] = []) -> CommandFrame {
+        CommandFrame(commandClass: CommandCode.powerClass, commandID: id, size: size, arguments: arguments)
     }
 
     private func lighting(_ id: UInt8, _ size: UInt8, _ arguments: [UInt8] = []) -> CommandFrame {

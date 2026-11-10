@@ -30,6 +30,7 @@ final class SpeakerModel {
     private(set) var lighting: LightingMode
     private(set) var lightingColor: LightColor
     var brightnessPercent = Initial.brightnessPercent
+    private(set) var autoPowerOff: AutoPowerOff?
 
     private let settings: SettingsStore
     private let queue = DispatchQueue(label: Queue.label, qos: .userInitiated)
@@ -90,6 +91,21 @@ final class SpeakerModel {
         brightnessPercent = brightness.percent
         perform({ try $0.writeBrightness(brightness) }) { [weak self] actual in
             if let actual { self?.brightnessPercent = actual.percent }
+        }
+    }
+
+    func setPowerSaving(_ isEnabled: Bool) {
+        autoPowerOff = AutoPowerOff(isEnabled: isEnabled, delay: autoPowerOff?.delay)
+        perform({ try $0.writePowerSaving(isEnabled) }) { [weak self] actual in
+            self?.showAutoPowerOff(actual)
+        }
+    }
+
+    func selectPowerOffDelay(_ delay: PowerOffDelay) {
+        guard let current = autoPowerOff else { return }
+        autoPowerOff = AutoPowerOff(isEnabled: current.isEnabled, delay: delay)
+        perform({ try $0.writePowerOffDelay(delay) }) { [weak self] actual in
+            self?.showAutoPowerOff(actual)
         }
     }
 
@@ -190,7 +206,12 @@ final class SpeakerModel {
         subwoofer = state.subwoofer?.value ?? subwoofer
         brightnessPercent = state.brightness?.percent ?? brightnessPercent
         show(state.equalizer)
+        showAutoPowerOff(state.autoPowerOff)
         connection = .connected
+    }
+
+    private func showAutoPowerOff(_ state: AutoPowerOff?) {
+        autoPowerOff = state ?? autoPowerOff
     }
 
     private func show(_ selection: EqualizerSelection?) {

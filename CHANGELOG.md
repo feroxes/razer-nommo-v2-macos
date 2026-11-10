@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-10
+
+### Added
+
+- About window with the version, the source code, the license and the Sparkle license.
+- Check for Updates and in-app updates with Sparkle. Updates are signed, and a signed `appcast.xml` is published with each release.
+- A dot on the menu-bar icon and a "Version X is available" row in the panel when an update is waiting; its Update… button opens Sparkle's window, where **Install Update** installs it.
+- A ⋯ menu in the panel with About, Check for Updates…, Check Automatically, Donate and Quit.
+- Auto power-off in the panel: a switch and a delay of 15, 30 or 45 minutes, read from the speaker and read back after each change.
+- `nommo power [on|off|15|30|45]`; `nommo status` also prints auto power-off.
+
+### Changed
+
+- Quit moved from its own button into the ⋯ menu.
+- Launch at login is registered again after an update.
+- `CFBundleVersion` equals the version, as `CFBundleShortVersionString` does.
+- The panel closes when another app becomes active.
+
 ## [1.0.0] - 2026-11-09
 
 ### Added
@@ -21,5 +39,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `nommo` command-line tool with `status`, `sub`, `eq`, `light`, `brightness` and `watch`.
 - Universal builds for Apple Silicon and Intel, running on macOS 14 and later.
 
-[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/feroxes/razer-nommo-v2-macos/releases/tag/v1.0.0

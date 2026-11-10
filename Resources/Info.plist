@@ -15,14 +15,22 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>1.0.0</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/feroxes/razer-nommo-v2-macos/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>O9NRO+H7+K2gwel3hLADdj9c0F6dHOfxoScePFmJY7A=</string>
+	<key>SUAllowsAutomaticUpdates</key>
+	<false/>
+	<key>SUEnableSystemProfiling</key>
+	<false/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2026 feroxes. MIT License.</string>
+	<string>Copyright © 2026 feroxes.</string>
 </dict>
 </plist>
