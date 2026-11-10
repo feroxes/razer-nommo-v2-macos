@@ -2,14 +2,12 @@ import NommoKit
 import SwiftUI
 
 extension Color {
-    private static let channelMax = Double(UInt8.max)
-
     init(_ light: LightColor) {
         self.init(
             .sRGB,
-            red: Double(light.red) / Self.channelMax,
-            green: Double(light.green) / Self.channelMax,
-            blue: Double(light.blue) / Self.channelMax
+            red: CGFloat(light.red) / LightColor.channelMax,
+            green: CGFloat(light.green) / LightColor.channelMax,
+            blue: CGFloat(light.blue) / LightColor.channelMax
         )
     }
 }

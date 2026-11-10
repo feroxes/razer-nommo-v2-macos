@@ -8,7 +8,6 @@ enum LightingPalette: CaseIterable {
     case cyan
     case blue
     case violet
-    case white
 
     static let initialStatic = LightingPalette.green.color
 
@@ -21,7 +20,6 @@ enum LightingPalette: CaseIterable {
         case .cyan: LightColor(red: 0x00, green: 0xE5, blue: 0xFF)
         case .blue: LightColor(red: 0x00, green: 0x47, blue: 0xFF)
         case .violet: LightColor(red: 0x8A, green: 0x2B, blue: 0xE2)
-        case .white: LightColor(red: 0xFF, green: 0xFF, blue: 0xFF)
         }
     }
 }

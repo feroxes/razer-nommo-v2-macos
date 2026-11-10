@@ -9,8 +9,13 @@ struct SwatchRow: View {
         static let edgeWidth: CGFloat = 0.5
     }
 
+    private enum Wheel {
+        static let colors: [Color] = [.red, .yellow, .green, .cyan, .blue, .purple, .red]
+    }
+
     let selection: LightColor?
-    let onSelect: (LightColor) -> Void
+    let onSelect: @MainActor (LightColor) -> Void
+    let onPickColor: @MainActor () -> Void
 
     var body: some View {
         HStack(spacing: .zero) {
@@ -18,23 +23,37 @@ struct SwatchRow: View {
                 Button {
                     onSelect(swatch.color)
                 } label: {
-                    circle(swatch.color)
+                    circle(Color(swatch.color), isSelected: swatch.color == selection)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(Strings.swatch(swatch)))
+                .accessibilityAddTraits(swatch.color == selection ? .isSelected : [])
                 .frame(maxWidth: .infinity)
             }
+            Button(action: onPickColor) {
+                circle(AngularGradient(colors: Wheel.colors, center: .center), isSelected: isCustomSelected)
+            }
+            .buttonStyle(.plain)
+            .help(Strings.customColor)
+            .accessibilityLabel(Text(Strings.customColor))
+            .accessibilityAddTraits(isCustomSelected ? .isSelected : [])
+            .frame(maxWidth: .infinity)
         }
     }
 
-    private func circle(_ color: LightColor) -> some View {
+    private var isCustomSelected: Bool {
+        guard let selection else { return false }
+        return !LightingPalette.allCases.contains { $0.color == selection }
+    }
+
+    private func circle(_ fill: some ShapeStyle, isSelected: Bool) -> some View {
         Circle()
-            .fill(Color(color))
+            .fill(fill)
             .overlay(Circle().strokeBorder(.tertiary, lineWidth: Layout.edgeWidth))
             .frame(width: Layout.swatchSize, height: Layout.swatchSize)
             .padding(Layout.ringGap)
             .overlay {
-                if color == selection {
+                if isSelected {
                     Circle().strokeBorder(.primary, lineWidth: Layout.ringWidth)
                 }
             }

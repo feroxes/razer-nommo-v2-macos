@@ -37,7 +37,7 @@ struct PanelView: View {
         case .connected:
             SubwooferTile(model: model)
             EqualizerTile(model: model)
-            LightingTile(model: model)
+            LightingTile(model: model, onPickColor: actions.pickColor)
             if let autoPowerOff = model.autoPowerOff {
                 PowerTile(model: model, state: autoPowerOff)
             }

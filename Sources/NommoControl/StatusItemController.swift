@@ -9,6 +9,8 @@ final class StatusItemController: NSObject {
     private let model: SpeakerModel
     private let launchAtLogin: LaunchAtLogin
     private let updates: UpdateController
+    private let colorPanel = ColorPanelController()
+    private var outsideClickMonitor: Any?
 
     init(model: SpeakerModel, launchAtLogin: LaunchAtLogin, updates: UpdateController) {
         self.model = model
@@ -24,8 +26,10 @@ final class StatusItemController: NSObject {
         content.sizingOptions = [.preferredContentSize]
         popover.contentViewController = content
         popover.behavior = .transient
+        popover.delegate = self
         configureButton()
         trackIcon()
+        trackConnection()
         closeWhenDeactivated()
     }
 
@@ -39,6 +43,9 @@ final class StatusItemController: NSObject {
                 self?.popover.performClose(nil)
                 updates.checkForUpdates()
             },
+            pickColor: { [weak self] in
+                self?.showColorPicker()
+            },
             donate: { [weak self] in
                 self?.popover.performClose(nil)
                 guard let url = ProjectLinks.donation else { return }
@@ -49,6 +56,43 @@ final class StatusItemController: NSObject {
                 NSApp.terminate(nil)
             }
         )
+    }
+
+    private func showColorPicker() {
+        popover.behavior = .applicationDefined
+        closeOnOutsideClicks()
+        colorPanel.show(
+            color: model.lightingColor,
+            beside: popover.contentViewController?.view.window,
+            onChange: { [weak self] color in self?.model.selectColor(color) },
+            onClose: { [weak self] in self?.colorPanelDidClose() }
+        )
+    }
+
+    private func colorPanelDidClose() {
+        popover.behavior = .transient
+        if let outsideClickMonitor {
+            NSEvent.removeMonitor(outsideClickMonitor)
+            self.outsideClickMonitor = nil
+        }
+    }
+
+    private func closeOnOutsideClicks() {
+        guard outsideClickMonitor == nil else { return }
+        outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
+            Task { @MainActor in self?.popover.performClose(nil) }
+        }
+    }
+
+    private func trackConnection() {
+        let connection = withObservationTracking {
+            model.connection
+        } onChange: { [weak self] in
+            Task { @MainActor in self?.trackConnection() }
+        }
+        if connection != .connected {
+            colorPanel.close()
+        }
     }
 
     private func configureButton() {
@@ -97,5 +141,12 @@ final class StatusItemController: NSObject {
         model.refresh()
         NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+    }
+}
+
+extension StatusItemController: NSPopoverDelegate {
+    func popoverDidClose(_ notification: Notification) {
+        colorPanel.close()
+        colorPanelDidClose()
     }
 }

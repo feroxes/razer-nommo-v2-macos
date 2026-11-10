@@ -95,7 +95,7 @@ If the key is lost, existing users can no longer update from inside the app; the
 
 - The tests pass.
 - Both binaries contain arm64 and x86_64 slices and record SDK 26 or later.
-- The app passes `scripts/check-app.sh`: valid code signature, embedded Sparkle, the `Frameworks` rpath, a feed URL and a public key, and `CFBundleVersion` equal to the version.
+- The app passes `scripts/check-app.sh`: valid code signature, embedded Sparkle, the `Frameworks` rpath, an `https://` feed URL and a public key, automatic installs and system profiling off, no `SUEnableAutomaticChecks`, and `CFBundleVersion` equal to the version.
 - The app's version and `nommo --version` equal the tag.
 - The appcast has exactly one item, with the tag's version, a download URL under the tag's release and an EdDSA signature, and that signature verifies against the `SUPublicEDKey` in the zipped app.
 - The `SUPublicEDKey` in the zipped app equals the one in the newest earlier stable tag (a tag without a hyphen), when that tag has one.
@@ -103,7 +103,7 @@ If the key is lost, existing users can no longer update from inside the app; the
 ### Testing an update locally
 
 1. Build an older and a newer version, for example `NOMMO_VERSION=1.0.1 scripts/build-app.sh` and then `NOMMO_VERSION=1.0.2 scripts/build-app.sh`. Keep a copy of each zip and app, because every build replaces `build/`.
-2. Write an appcast for the newer zip with `generate_appcast --ed-key-file <file> --download-url-prefix http://127.0.0.1:8000/` and serve the folder with `python3 -m http.server`. Use the key you exported and delete it afterwards.
+2. Write an appcast for the newer zip with `generate_appcast --ed-key-file <file> --download-url-prefix http://127.0.0.1:8000/ <folder>`, where `<folder>` holds only the newer zip, and serve that folder with `python3 -m http.server`. Use the key you exported and delete it afterwards.
 3. Point the older app at that feed: `defaults write io.github.feroxes.NommoControl SUFeedURL http://127.0.0.1:8000/appcast.xml`. Sparkle reads this value before `Info.plist`.
 4. Open the older app and choose **Check for Updates…**.
 5. Restore the real feed: `defaults delete io.github.feroxes.NommoControl SUFeedURL`.

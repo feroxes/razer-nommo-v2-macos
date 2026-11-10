@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-10
+
+### Added
+
+- A rainbow button in place of the white swatch. It opens the macOS Colors window beside the panel, and the speaker follows the color as you pick it.
+
+### Removed
+
+- The White swatch. White is one click away in the Colors window.
+
 ## [1.1.0] - 2026-11-10
 
 ### Added
@@ -39,6 +49,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `nommo` command-line tool with `status`, `sub`, `eq`, `light`, `brightness` and `watch`.
 - Universal builds for Apple Silicon and Intel, running on macOS 14 and later.
 
-[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/feroxes/razer-nommo-v2-macos/releases/tag/v1.0.0

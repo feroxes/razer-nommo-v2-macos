@@ -13,6 +13,7 @@ struct LightingTile: View {
     }
 
     @Bindable var model: SpeakerModel
+    let onPickColor: @MainActor () -> Void
 
     var body: some View {
         Tile(symbol: Symbol.lighting, title: Strings.lighting) {
@@ -23,9 +24,7 @@ struct LightingTile: View {
             }
             .labelsHidden()
             .pickerStyle(.segmented)
-            SwatchRow(selection: model.lighting.color) { color in
-                model.selectColor(color)
-            }
+            SwatchRow(selection: model.lighting.color, onSelect: model.selectColor, onPickColor: onPickColor)
             brightness
         }
     }

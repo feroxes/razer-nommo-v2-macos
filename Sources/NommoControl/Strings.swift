@@ -12,6 +12,14 @@ enum Strings {
     static let lighting = "Lighting"
     static let spectrum = "Spectrum"
     static let staticColor = "Static"
+    static let customColor = "Custom color"
+    static let edit = "Edit"
+    static let undo = "Undo"
+    static let redo = "Redo"
+    static let cut = "Cut"
+    static let copy = "Copy"
+    static let paste = "Paste"
+    static let selectAll = "Select All"
     static let brightness = "Brightness"
     static let autoPowerOff = "Auto power-off"
     static let autoPowerOffHint = "Switches the speaker off after this much silence."
@@ -68,7 +76,6 @@ enum Strings {
         case .cyan: "Cyan"
         case .blue: "Blue"
         case .violet: "Violet"
-        case .white: "White"
         }
     }
 

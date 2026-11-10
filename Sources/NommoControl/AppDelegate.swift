@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItemController: StatusItemController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.mainMenu = EditMenu.makeMainMenu()
         let settings = SettingsStore(defaults: .standard)
         let model = SpeakerModel(settings: settings)
         model.start()

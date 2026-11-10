@@ -17,12 +17,12 @@ An unofficial macOS menu-bar app for the **Razer Nommo V2** speakers. It sets th
 
 - **Subwoofer** level from 1 to 7.
 - **Equalizer** presets Default, Game, Movie and Music, plus a 10-band **Custom** curve (31 Hz to 16 kHz, levels from −12 to +12 per band) that the app remembers.
-- **Lighting**: Spectrum (the speaker's built-in color cycle) or Static, with eight color swatches and a brightness slider.
+- **Lighting**: Spectrum (the speaker's built-in color cycle) or Static, with seven color swatches, a rainbow button that opens the macOS Colors window for any other color, and a brightness slider.
 - **Restores your lighting** whenever the speaker powers on. The speaker itself always starts in Spectrum.
 - Reads the subwoofer, the equalizer and auto power-off from the speaker when it connects and each time you open the panel, and never overwrites them on its own.
 - **Auto power-off**: switch it off, or choose after how much silence the speaker turns itself off: 15, 30 or 45 minutes. The speaker keeps this setting.
 - Reconnects automatically. When the speaker switches itself off and comes back, the app picks it up again.
-- **Updates** from inside the app: **Check for Updates…** in the ⋯ menu, with an optional daily check in the background. A dot on the menu-bar icon and a **Version X is available** row in the panel show that an update is waiting; nothing installs until you click **Install Update**. The panel's **Update…** button opens that window.
+- **Updates** from inside the app: **Check for Updates…** in the ⋯ menu, with an optional daily check in the background. A dot on the menu-bar icon and a **Version X is available** row in the panel show that an update is waiting; the panel's **Update…** button opens Sparkle's update window, and nothing installs until you click **Install Update** there.
 - An **About** window with the version, the source code and the license, from the ⋯ menu.
 - A **Donate** item in the ⋯ menu and a red heart button in the panel, both opening the donation page.
 - **Launch at login** and no Dock icon. While the speaker is off, the app stays idle until it reappears.
