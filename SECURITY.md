@@ -4,6 +4,10 @@
 
 Security fixes go into the latest release only.
 
+## Updates
+
+Updates are signed with an EdDSA key. The public key is `SUPublicEDKey` in [`Resources/Info.plist`](Resources/Info.plist), and the app installs an update only if its signature matches that key. The release workflow checks each appcast signature against the key inside the shipped app before it publishes the release. If you suspect the signing key has been compromised, report it privately, as described below.
+
 ## Reporting a vulnerability
 
 Please don't report security problems in public issues, discussions or pull requests. Report them privately through GitHub instead:

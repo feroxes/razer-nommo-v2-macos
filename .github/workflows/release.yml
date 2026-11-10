@@ -73,6 +73,11 @@ jobs:
         working-directory: build
         run: shasum -a 256 NommoControl-*.zip nommo-*.zip > SHA256SUMS.txt
 
+      - name: Write appcast
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: scripts/make-appcast.sh "${TAG#v}"
+
       - name: Write release notes
         run: scripts/release-notes.sh "${TAG#v}" > build/release-notes.md
 
@@ -87,7 +92,7 @@ jobs:
             NOTES_OPTION="--generate-notes"
           fi
           gh release create "$TAG" \
-            build/NommoControl-*.zip build/nommo-*.zip build/SHA256SUMS.txt \
+            build/NommoControl-*.zip build/nommo-*.zip build/SHA256SUMS.txt build/appcast.xml \
             --verify-tag \
             --prerelease="$PRERELEASE" \
             --title "Nommo Control ${TAG#v}" \

@@ -13,7 +13,7 @@ struct DeviceTests {
     @Test("Reads subwoofer, equalizer and brightness")
     func readState() throws {
         let device = NommoDevice(transport: Self.musicSpeaker())
-        #expect(try device.readState() == SpeakerState(subwoofer: SubwooferLevel(2), equalizer: .preset(.music), brightness: Brightness(byte: 0xE5)))
+        #expect(try device.readState() == SpeakerState(subwoofer: SubwooferLevel(2), equalizer: .preset(.music), brightness: Brightness(byte: 0xE5), autoPowerOff: AutoPowerOff(isEnabled: true, delay: .fifteenMinutes)))
     }
 
     @Test("Subwoofer is written and read back")

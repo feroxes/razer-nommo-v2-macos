@@ -5,6 +5,7 @@ enum CLIOutput {
         static let subwoofer = "subwoofer"
         static let equalizer = "equalizer"
         static let brightness = "brightness"
+        static let autoPowerOff = "auto power-off"
         static let ioReturn = "IOReturn"
     }
 
@@ -14,6 +15,7 @@ enum CLIOutput {
         static let fieldSeparator = ", "
         static let wordSeparator = " "
         static let percentSuffix = "%"
+        static let minutesSuffix = " min"
         static let hexPrefix = "0x"
         static let hexRadix = 16
     }
@@ -27,6 +29,7 @@ enum CLIOutput {
       \(CLIKeyword.equalizer) <\(presetChoices)>
       \(CLIKeyword.light) \(CLIKeyword.spectrum) | \(CLIKeyword.staticColor) <hex>
       \(CLIKeyword.brightness) <\(span(Brightness.percentRange))>
+      \(CLIKeyword.power) [\(powerChoices)]
       \(CLIKeyword.watch)
       \(CLIKeyword.shortHelp), \(CLIKeyword.help)
       \(CLIKeyword.version)
@@ -60,7 +63,8 @@ enum CLIOutput {
         [
             subwoofer(state.subwoofer),
             equalizer(state.equalizer),
-            brightness(state.brightness)
+            brightness(state.brightness),
+            autoPowerOff(state.autoPowerOff)
         ].joined(separator: Format.fieldSeparator)
     }
 
@@ -74,6 +78,21 @@ enum CLIOutput {
 
     static func brightness(_ brightness: Brightness?) -> String {
         field(Label.brightness, brightness.map { String($0.percent) + Format.percentSuffix } ?? unknown)
+    }
+
+    static func autoPowerOff(_ state: AutoPowerOff?) -> String {
+        field(Label.autoPowerOff, autoPowerOffValue(state))
+    }
+
+    private static func autoPowerOffValue(_ state: AutoPowerOff?) -> String {
+        guard let state else { return unknown }
+        guard state.isEnabled else { return CLIKeyword.off }
+        guard let delay = state.delay else { return CLIKeyword.on }
+        return String(delay.minutes) + Format.minutesSuffix
+    }
+
+    private static var powerChoices: String {
+        ([CLIKeyword.on, CLIKeyword.off] + PowerOffDelay.allCases.map { String($0.minutes) }).joined(separator: Format.choiceSeparator)
     }
 
     private static var presetChoices: String {

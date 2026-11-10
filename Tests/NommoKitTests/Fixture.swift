@@ -8,6 +8,8 @@ enum Fixture {
     static let builtInMode: UInt8 = 0x01
     static let subwooferByte: UInt8 = 0x02
     static let brightnessByte: UInt8 = 0xE5
+    static let powerSavingOn: UInt8 = 0x01
+    static let fifteenMinutes: [UInt8] = [0x03, 0x84]
     static let tint = LightColor(red: 0x12, green: 0x34, blue: 0x56)
     static let cyan = LightColor(red: 0x00, green: 0xFF, blue: 0xFF)
     static let violet = LightColor(red: 0xA0, green: 0x00, blue: 0xFF)

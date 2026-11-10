@@ -10,7 +10,7 @@
 An unofficial macOS menu-bar app for the **Razer Nommo V2** speakers. It sets the subwoofer level, the equalizer and the lighting, which Razer Synapse can't do for this speaker on a Mac.
 
 <p align="center">
-  <img src="docs/images/panel.png" width="392" alt="The Nommo Control panel open from the menu bar, with subwoofer, equalizer and lighting controls">
+  <img src="docs/images/panel.png" width="392" alt="The Nommo Control panel open from the menu bar, with subwoofer, equalizer, lighting and auto power-off controls">
 </p>
 
 ## Features
@@ -19,8 +19,12 @@ An unofficial macOS menu-bar app for the **Razer Nommo V2** speakers. It sets th
 - **Equalizer** presets Default, Game, Movie and Music, plus a 10-band **Custom** curve (31 Hz to 16 kHz, levels from −12 to +12 per band) that the app remembers.
 - **Lighting**: Spectrum (the speaker's built-in color cycle) or Static, with eight color swatches and a brightness slider.
 - **Restores your lighting** whenever the speaker powers on. The speaker itself always starts in Spectrum.
-- Reads the subwoofer and equalizer from the speaker when it connects and each time you open the panel, and never overwrites them on its own.
-- Reconnects automatically. The Nommo V2 switches itself off after about 15 minutes of silence, and the app picks it up again when it comes back.
+- Reads the subwoofer, the equalizer and auto power-off from the speaker when it connects and each time you open the panel, and never overwrites them on its own.
+- **Auto power-off**: switch it off, or choose after how much silence the speaker turns itself off: 15, 30 or 45 minutes. The speaker keeps this setting.
+- Reconnects automatically. When the speaker switches itself off and comes back, the app picks it up again.
+- **Updates** from inside the app: **Check for Updates…** in the ⋯ menu, with an optional daily check in the background. A dot on the menu-bar icon and a **Version X is available** row in the panel show that an update is waiting; nothing installs until you click **Install Update**. The panel's **Update…** button opens that window.
+- An **About** window with the version, the source code and the license, from the ⋯ menu.
+- A **Donate** item in the ⋯ menu and a red heart button in the panel, both opening the donation page.
 - **Launch at login** and no Dock icon. While the speaker is off, the app stays idle until it reappears.
 - A Liquid Glass panel on macOS 26 and later, and the standard popover on earlier versions.
 - A `nommo` [command-line tool](#command-line-tool) for Terminal and scripts.
@@ -52,9 +56,9 @@ Each release also contains `SHA256SUMS.txt`. To check a download, run this in th
 shasum -a 256 -c --ignore-missing SHA256SUMS.txt
 ```
 
-**Update:** quit the app from the panel, replace it in Applications with the new version and allow it to open again as above. Your settings are kept. If Launch at login stops working after an update, see [Troubleshooting](#troubleshooting).
+**Update:** the app updates itself. Choose **Check for Updates…** in the ⋯ menu at the bottom of the panel and click **Install Update** when an update is offered. On its second launch the app asks whether to check automatically; with **Check Automatically** on, it checks once a day and installs only when you click **Install Update**. You can change the choice in the ⋯ menu at any time. Your settings are kept. Version 1.0.0 has no updater, so if you have it, update once by hand: click **Quit** in the panel, replace it in Applications with the new version and allow it to open again as above.
 
-**Uninstall:** turn off Launch at login, quit the app and delete it. To also remove its settings, run `defaults delete io.github.feroxes.NommoControl`.
+**Uninstall:** turn off Launch at login, choose **Quit Nommo Control** in the ⋯ menu and delete the app. To also remove its settings, run `defaults delete io.github.feroxes.NommoControl`.
 
 ## Command-line tool
 
@@ -75,6 +79,7 @@ usage: nommo <command>
   eq <default|game|movie|music>
   light spectrum | static <hex>
   brightness <0-100>
+  power [on|off|15|30|45]
   watch
   -h, --help
   --version
@@ -82,33 +87,38 @@ usage: nommo <command>
 
 | Command | What it does |
 | --- | --- |
-| `status` | Prints the subwoofer level, the equalizer (`default`, `game`, `movie`, `music`, `custom` or `built-in`) and the brightness. |
+| `status` | Prints the subwoofer level, the equalizer (`default`, `game`, `movie`, `music`, `custom` or `built-in`), the brightness and auto power-off. |
 | `sub <1-7>` | Sets the subwoofer level. |
 | `eq <preset>` | Applies an equalizer preset. |
 | `light spectrum` | Switches the lighting to the built-in color cycle. |
 | `light static <hex>` | Sets one color, for example `ff7a00`. A leading `#` is optional; quote it in the shell. |
 | `brightness <0-100>` | Sets the lighting brightness in percent. |
+| `power` | Prints auto power-off: `off` or the delay, for example `15 min`. |
+| `power on` / `power off` | Turns auto power-off on or off. With it off, the speaker never switches itself off. |
+| `power <15\|30\|45>` | Turns auto power-off on with this delay in minutes. The speaker accepts no other delays. |
 | `watch` | Prints `connected: …` and `disconnected` as the speaker comes and goes, until you press Ctrl-C. |
 
 ```console
 $ nommo status
-subwoofer 2, equalizer music, brightness 100%
+subwoofer 2, equalizer music, brightness 100%, auto power-off 15 min
 $ nommo sub 4
 subwoofer 4
 $ nommo eq game
 equalizer game
 $ nommo light static ff7a00
 lighting applied
+$ nommo power 30
+auto power-off 30 min
 ```
 
-After changing the subwoofer, the equalizer or the brightness, `nommo` reads the value back from the speaker and prints only that value as the speaker reports it. The speaker has no command to read the lighting, so `light` only confirms that the command was sent. If no speaker appears within 3 seconds, it prints `Speaker not found`; errors go to stderr with exit status 1.
+After changing the subwoofer, the equalizer, the brightness or auto power-off, `nommo` reads the value back from the speaker and prints only that value as the speaker reports it. The speaker has no command to read the lighting, so `light` only confirms that the command was sent. If no speaker appears within 3 seconds, it prints `Speaker not found`; errors go to stderr with exit status 1.
 
 The CLI doesn't change the app's saved settings, so the app applies its own lighting choice again the next time the speaker powers on. The panel reads the speaker again each time you open it, so changes made with `nommo` show up there.
 
 ## Troubleshooting
 
 - **The panel says "Speaker is off", or `nommo` prints `Speaker not found`.** The speaker is switched off or isn't connected over USB. Switch it on and connect the USB cable; the app picks it up as soon as it appears.
-- **Launch at login doesn't work, or stopped working after an update.** Make sure the app is in your Applications folder (see step 2 of [Install](#install)), then turn **Launch at login** off and on again in the panel. Releases are signed ad hoc, so each version has a different code signature, and macOS may no longer match the login item to the updated app.
+- **Launch at login doesn't work, or stopped working after an update.** Make sure the app is in your Applications folder (see step 2 of [Install](#install)). The app registers Launch at login again after an update. If macOS asks you to approve the login item, or it is still off, turn **Launch at login** off and on again in the panel. Releases are signed ad hoc, so each version has a different code signature, and macOS may not match the login item to the updated app.
 
 ## Build from source
 
@@ -127,30 +137,34 @@ scripts/build-app.sh
 - `build/Nommo Control.app` and `build/NommoControl-<version>.zip`
 - `build/nommo` and `build/nommo-<version>.zip`
 
-The version comes from `git describe --tags`; the script writes it into the app's `Info.plist` and embeds it in the `nommo` binary. The script prints the paths of both zips.
+The version comes from `git describe --tags`, or from the `NOMMO_VERSION` environment variable when it is set; the script writes it into the app's `Info.plist` (as both `CFBundleShortVersionString` and `CFBundleVersion`) and embeds it in the `nommo` binary. It also embeds Sparkle in the app and checks the result with `scripts/check-app.sh`. The script prints the paths of both zips.
 
 To try the CLI without packaging it, run `swift run nommo status`. See [CONTRIBUTING.md](CONTRIBUTING.md) for a test quirk with Command Line Tools.
 
 ## How it works
 
-The app talks to the speaker through USB HID feature reports using IOKit. It needs no driver, no kernel extension and no special permissions, and it never touches the audio stream. Only the commands that were confirmed on a Nommo V2 are used. Every change to the subwoofer, the equalizer and the brightness is read back from the speaker; the lighting can't be read back, because the speaker has no command for it.
+The app talks to the speaker through USB HID feature reports using IOKit. It needs no driver, no kernel extension and no special permissions, and it never touches the audio stream. Only the commands that were confirmed on a Nommo V2 are used. Every change to the subwoofer, the equalizer, the brightness and auto power-off is read back from the speaker; the lighting can't be read back, because the speaker has no command for it.
 
 - [docs/PROTOCOL.md](docs/PROTOCOL.md) describes the report format and the commands.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) explains how the code is organized.
 
 ### Privacy
 
-Nommo Control and `nommo` make no network connections and collect no data. The app keeps its settings on your Mac. The only link to the web is the red heart button in the panel, which opens the donation page in your browser.
+Nommo Control contacts GitHub only to read the update feed (`appcast.xml`) and to download an update. It does this once a day if you allowed automatic checks, and when you choose **Check for Updates…**. Sparkle's system profile is off, and the app collects no data. The app keeps its settings on your Mac. The red heart button and the **Donate** menu item only open the donation page in your browser. The `nommo` command-line tool makes no network connections.
 
 ### Not supported
 
-Bluetooth, THX Spatial Audio, the automatic power-off timer, audio-reactive or other animated lighting effects, and firmware updates.
+Bluetooth, THX Spatial Audio (it is audio processing on a Windows PC, not a speaker setting), audio-reactive or other animated lighting effects, and firmware updates.
 
 ## Support the project
 
 [![Donate on Donatello](https://img.shields.io/badge/Donatello-support%20the%20project-ff5c5c)](https://donatello.to/feroxes)
 
-Nommo Control is free and open source. If it's useful to you, you can support its development with a donation on [Donatello](https://donatello.to/feroxes). Donations are voluntary and unconditional, with no rewards attached. The red heart button in the footer of the app's panel opens the same page.
+Nommo Control is free and open source. If it's useful to you, you can support its development with a donation on [Donatello](https://donatello.to/feroxes). Donations are voluntary and unconditional, with no rewards attached. The red heart button in the footer of the app's panel and **Donate** in its ⋯ menu open the same page.
+
+## Acknowledgements
+
+In-app updates use [Sparkle](https://sparkle-project.org), which is released under the MIT license.
 
 ## Contributing
 

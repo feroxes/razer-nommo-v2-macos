@@ -13,18 +13,41 @@ enum Strings {
     static let spectrum = "Spectrum"
     static let staticColor = "Static"
     static let brightness = "Brightness"
+    static let autoPowerOff = "Auto power-off"
+    static let autoPowerOffHint = "Switches the speaker off after this much silence."
     static let launchAtLogin = "Launch at login"
-    static let quit = "Quit"
+    static let quit = "Quit Nommo Control"
+    static let more = "More"
+    static let aboutApp = "About Nommo Control"
+    static let checkForUpdates = "Check for Updates…"
+    static let checkAutomatically = "Check Automatically"
+    static let disclaimer = "Unofficial. Not affiliated with Razer Inc."
+    static let sourceCode = "Source code on GitHub"
+    static let license = "MIT License"
+    static let update = "Update…"
+    static let updatesBySparkle = "Updates by Sparkle"
+    static let sparkleLicense = "Sparkle License"
+    static let updateAvailableGlyph = "\(title), update available"
     static let supportProject = "Support the project"
+    static let donate = "Donate"
 
     static let bandLabels = EqualizerBands.centerHertz.map(bandLabel)
 
+    static func versionAvailable(_ version: String) -> String {
+        "Version \(version) is available"
+    }
+
+    private static let minutesSuffix = " min"
     private static let levelSeparator = " / "
     private static let hertzPerKilohertz = 1_000.0
     private static let kilohertzSuffix = "k"
 
     static func subwooferLevel(_ level: Int) -> String {
         "\(level)\(levelSeparator)\(SubwooferLevel.range.upperBound)"
+    }
+
+    static func minutes(_ minutes: Int) -> String {
+        "\(minutes)\(minutesSuffix)"
     }
 
     static func preset(_ preset: EqualizerPreset) -> String {

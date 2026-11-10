@@ -10,18 +10,35 @@ enum SpeakerGlyph {
         static let lineWidth: CGFloat = 1.4
         static let baseY: CGFloat = 15.6
         static let baseHalfWidth: CGFloat = 2.6
+        static let badgeCenter = CGPoint(x: 19.5, y: 2.5)
+        static let badgeRadius: CGFloat = 2.5
+        static let badgeGap: CGFloat = 1
     }
 
-    static let image: NSImage = {
+    static let image = makeImage(badged: false)
+    static let badgedImage = makeImage(badged: true)
+
+    private static func makeImage(badged: Bool) -> NSImage {
         let image = NSImage(size: Geometry.canvas, flipped: true) { _ in
             guard let context = NSGraphicsContext.current?.cgContext else { return false }
             draw(in: context)
+            if badged {
+                drawBadge(in: context)
+            }
             return true
         }
         image.isTemplate = true
-        image.accessibilityDescription = Strings.title
+        image.accessibilityDescription = badged ? Strings.updateAvailableGlyph : Strings.title
         return image
-    }()
+    }
+
+    private static func drawBadge(in context: CGContext) {
+        let center = Geometry.badgeCenter
+        context.setBlendMode(.clear)
+        context.fillEllipse(in: circle(centerX: center.x, centerY: center.y, radius: Geometry.badgeRadius + Geometry.badgeGap))
+        context.setBlendMode(.normal)
+        context.fillEllipse(in: circle(centerX: center.x, centerY: center.y, radius: Geometry.badgeRadius))
+    }
 
     private static func draw(in context: CGContext) {
         context.setStrokeColor(NSColor.black.cgColor)
