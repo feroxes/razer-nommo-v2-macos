@@ -56,6 +56,7 @@ sequenceDiagram
     Session->>Session: read state, apply saved lighting
     Session-->>Model: SpeakerState on the main actor
     Model->>Model: show values, status Connected
+    Model->>Model: 5 s later, apply saved lighting again
 ```
 
 - **`main.swift`** starts `NSApplication` with the accessory activation policy, so the app has no Dock icon. `Resources/Info.plist` also sets `LSUIElement`.
@@ -64,6 +65,7 @@ sequenceDiagram
   - A failed exchange marks the speaker as off and asks the monitor to reconnect every 2 seconds until the speaker answers or is unplugged.
   - Sliders write only when released.
   - Lighting writes are coalesced: while one is in flight, only the most recent request is kept.
+  - Five seconds after a connection (`SpeakerSession.lightingSettleDelay`) it applies the saved lighting again, because the speaker resets its lighting to Spectrum during its first seconds on USB.
 - **`StatusItemController`** puts an `NSStatusItem` in the menu bar and shows an `NSPopover` that hosts the SwiftUI `PanelView`. The popover is transient, except while the Colors window is open: then it is application-defined, so clicks in the Colors window leave it open, and a global mouse monitor closes it on clicks outside the app. It also closes when the app becomes inactive, and closing it closes the Colors window. When the speaker goes off, the Colors window closes too. On macOS 26 and later the system draws that popover with Liquid Glass.
 - **`Views/`** contains the panel pieces: header, subwoofer, equalizer (with the custom curve editor), lighting (with the color swatches and the custom color button), auto power-off, the "speaker is off" tile, the update banner and the footer with Launch at login, the donate button and the ⋯ menu (`PanelMenu`: About, Check for Updates…, Check Automatically, Donate, Quit).
 - **`LaunchAtLogin`** wraps `SMAppService.mainApp`. When the version differs from the last one the app launched with and Launch at login is requested, it unregisters and registers the login item again. The decision is `LaunchAtLoginRenewal.isNeeded` in `NommoKit`; `SettingsStore` keeps `launchAtLoginRequested` and `lastLaunchedVersion`. The renewal is skipped, and `lastLaunchedVersion` isn't recorded, while the app runs from a translocated location (a path containing `/AppTranslocation/`), as Sparkle does. A change made in System Settings is read back by `refresh()` and stored as the new request.

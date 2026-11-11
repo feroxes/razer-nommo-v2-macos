@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-11-11
+
+### Fixed
+
+- The saved lighting comes back after the speaker is switched off and on or reconnected over USB. The speaker resets its lighting to Spectrum during its first seconds on USB, so the app applies the color again 5 seconds after the speaker connects.
+
 ## [1.2.0] - 2026-11-10
 
 ### Added
@@ -49,7 +55,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `nommo` command-line tool with `status`, `sub`, `eq`, `light`, `brightness` and `watch`.
 - Universal builds for Apple Silicon and Intel, running on macOS 14 and later.
 
-[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/feroxes/razer-nommo-v2-macos/releases/tag/v1.0.0

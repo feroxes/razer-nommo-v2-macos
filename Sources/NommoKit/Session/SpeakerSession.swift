@@ -6,6 +6,8 @@ public final class SpeakerSession: Sendable {
         static let delay: TimeInterval = 0.5
     }
 
+    public static let lightingSettleDelay: TimeInterval = 5
+
     private let device: NommoDevice
     private let settings: SettingsStore
     private let retryDelay: TimeInterval

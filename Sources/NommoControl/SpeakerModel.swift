@@ -123,6 +123,10 @@ final class SpeakerModel {
         lightingColor = mode.color ?? lightingColor
         settings.lighting = mode
         guard connection == .connected else { return }
+        requestLightingWrite(mode)
+    }
+
+    private func requestLightingWrite(_ mode: LightingMode) {
         if isWritingLighting {
             pendingLighting = mode
         } else {
@@ -160,6 +164,15 @@ final class SpeakerModel {
         let session = SpeakerSession(device: newDevice, settings: settings)
         run(on: newDevice, { _ in try session.start() }) { [weak self] state in
             self?.adopt(state)
+            self?.reapplyLightingAfterSettling(on: newDevice)
+        }
+    }
+
+    private func reapplyLightingAfterSettling(on source: NommoDevice) {
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(SpeakerSession.lightingSettleDelay))
+            guard let self, source === device, connection == .connected else { return }
+            requestLightingWrite(lighting)
         }
     }
 

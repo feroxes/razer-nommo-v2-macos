@@ -75,7 +75,7 @@ A band byte is the band's level plus `0x0C`. The valid bytes are `00` to `18`, w
 | Write brightness | ID `04`, size `03`, args `01 00 V` | `V` is 0 to 255. Nommo Control maps 0–100 % onto this range. The speaker keeps it while switched off. |
 | Read brightness | ID `84`, size `03`, args `01 00`, result in `args[2]` | |
 | Enter frame mode | ID `02`, size `06`, args `00 00 08 00 01` | Stops the built-in animation, so the LEDs show frames sent by the host. |
-| Fill frame | ID `03`, size `29`, args `00 00 00 00 0B` followed by 12 × `R G B` | LEDs 0–5 are on the left speaker and 6–11 on the right. The frame stays until the speaker switches off. |
+| Fill frame | ID `03`, size `29`, args `00 00 00 00 0B` followed by 12 × `R G B` | LEDs 0–5 are on the left speaker and 6–11 on the right. The frame stays until the speaker switches off or reconnects over USB. |
 | Resume animation | ID `02`, size `06`, args `00 00 00` | Leaves frame mode, and the built-in Spectrum cycle continues. |
 
 The two lighting modes in the app are built from these commands:
@@ -96,6 +96,7 @@ The speaker keeps both settings while switched off.
 
 - With auto power-off on, the speaker switches itself off after the power-off delay of silence (15 minutes by default) and disappears from USB.
 - When it is switched on again, it appears as a new HID device and runs its built-in animation. The subwoofer level, the equalizer, the brightness and auto power-off survive; the lighting mode doesn't. That's why Nommo Control applies the saved lighting every time the speaker connects.
+- During its first seconds on USB the speaker resets the lighting to Spectrum once more. When it was already on, for example after a USB switch hands it back to the Mac, this happens within 0.35 s of the HID device appearing. When it has just been switched on, it happens between 1.4 s and 2.5 s. Frames written before that are acknowledged with status `02` and then lost, so Nommo Control applies the saved lighting again 5 s after the speaker connects.
 - The first reads right after power-on can fail. Nommo Control tries to read the state up to three times, 0.5 s apart.
 - Some unknown read commands take about 5 seconds to time out.
 

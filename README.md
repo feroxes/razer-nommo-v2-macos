@@ -18,7 +18,7 @@ An unofficial macOS menu-bar app for the **Razer Nommo V2** speakers. It sets th
 - **Subwoofer** level from 1 to 7.
 - **Equalizer** presets Default, Game, Movie and Music, plus a 10-band **Custom** curve (31 Hz to 16 kHz, levels from −12 to +12 per band) that the app remembers.
 - **Lighting**: Spectrum (the speaker's built-in color cycle) or Static, with seven color swatches, a rainbow button that opens the macOS Colors window for any other color, and a brightness slider.
-- **Restores your lighting** whenever the speaker powers on. The speaker itself always starts in Spectrum.
+- **Restores your lighting** whenever the speaker powers on or reconnects over USB, about 5 seconds after it appears. The speaker itself always starts in Spectrum.
 - Reads the subwoofer, the equalizer and auto power-off from the speaker when it connects and each time you open the panel, and never overwrites them on its own.
 - **Auto power-off**: switch it off, or choose after how much silence the speaker turns itself off: 15, 30 or 45 minutes. The speaker keeps this setting.
 - Reconnects automatically. When the speaker switches itself off and comes back, the app picks it up again.
