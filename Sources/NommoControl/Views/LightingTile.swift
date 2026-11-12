@@ -17,16 +17,28 @@ struct LightingTile: View {
 
     var body: some View {
         Tile(symbol: Symbol.lighting, title: Strings.lighting) {
-            Picker(Strings.lighting, selection: kind) {
-                ForEach(LightingKind.allCases, id: \.self) { kind in
-                    Text(kind.title).tag(kind)
+            TileSwitch(title: Strings.lighting, isOn: isOn)
+        } content: {
+            Group {
+                Picker(Strings.lighting, selection: kind) {
+                    ForEach(LightingKind.allCases, id: \.self) { kind in
+                        Text(kind.title).tag(kind)
+                    }
                 }
+                .labelsHidden()
+                .pickerStyle(.segmented)
+                SwatchRow(selection: model.lighting.color, onSelect: model.selectColor, onPickColor: onPickColor)
+                brightness
             }
-            .labelsHidden()
-            .pickerStyle(.segmented)
-            SwatchRow(selection: model.lighting.color, onSelect: model.selectColor, onPickColor: onPickColor)
-            brightness
+            .switchedOff(!model.isLightingOn)
         }
+    }
+
+    private var isOn: Binding<Bool> {
+        Binding(
+            get: { model.isLightingOn },
+            set: { model.setLightingOn($0) }
+        )
     }
 
     private var brightness: some View {

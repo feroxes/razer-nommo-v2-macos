@@ -1,8 +1,14 @@
 public struct Brightness: Equatable, Codable, Sendable {
     public static let percentRange = 0...100
+    public static let off = Brightness(clamping: percentRange.lowerBound)
+    public static let full = Brightness(clamping: percentRange.upperBound)
     static let maxByte = 255
 
     public let percent: Int
+
+    public var isOff: Bool {
+        percent == Self.percentRange.lowerBound
+    }
 
     private enum CodingKeys: String, CodingKey {
         case percent

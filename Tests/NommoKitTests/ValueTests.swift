@@ -85,6 +85,14 @@ struct ValueTests {
         #expect(try Self.decoder.decode(EqualizerCurve.self, from: JSONEncoder().encode(movie)) == movie)
     }
 
+    @Test("Brightness is off only at zero")
+    func brightnessOff() {
+        #expect(Brightness.off.isOff)
+        #expect(Brightness(clamping: -5).isOff)
+        #expect(!Brightness(clamping: 1).isOff)
+        #expect(Brightness.full.percent == 100)
+    }
+
     @Test("Brightness decoding clamps percent")
     func brightnessDecoding() throws {
         #expect(try Self.decoder.decode(Brightness.self, from: Data(#"{"percent":500}"#.utf8)).percent == 100)

@@ -25,6 +25,15 @@ struct SessionTests {
         #expect(SettingsStore(defaults: store.defaults).lighting == .staticColor(Fixture.cyan))
     }
 
+    @Test("Lit brightness defaults to full, persists and never becomes off")
+    func litBrightness() {
+        let store = SettingsStore(defaults: InMemoryDefaults())
+        #expect(store.litBrightness == .full)
+        store.litBrightness = Brightness(clamping: 40)
+        store.litBrightness = .off
+        #expect(SettingsStore(defaults: store.defaults).litBrightness == Brightness(clamping: 40))
+    }
+
     @Test("Unknown stored value falls back to spectrum", arguments: [
         #"{"breathing":{"_0":{"red":68,"green":214,"blue":44}}}"#,
         #"{"staticColor":{"_0":{"red":0,"green":255,"blue":255}}}"#,

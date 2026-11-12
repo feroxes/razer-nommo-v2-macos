@@ -6,6 +6,7 @@ public final class SettingsStore: @unchecked Sendable {
         static let customCurve = "customCurve"
         static let launchAtLoginRequested = "launchAtLoginRequested"
         static let lastLaunchedVersion = "lastLaunchedVersion"
+        static let litBrightness = "litBrightness"
     }
 
     let defaults: UserDefaults
@@ -22,6 +23,14 @@ public final class SettingsStore: @unchecked Sendable {
     public var customCurve: EqualizerCurve {
         get { load(EqualizerCurve.self, key: Key.customCurve) ?? .flat }
         set { save(newValue, key: Key.customCurve) }
+    }
+
+    public var litBrightness: Brightness {
+        get { load(Brightness.self, key: Key.litBrightness) ?? .full }
+        set {
+            guard !newValue.isOff else { return }
+            save(newValue, key: Key.litBrightness)
+        }
     }
 
     public var launchAtLoginRequested: Bool? {

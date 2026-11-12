@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-12
+
+### Added
+
+- A switch in the Lighting tile turns the lighting off and back on at the previous brightness. Off is brightness 0, which the speaker keeps while switched off.
+
 ## [1.2.1] - 2026-11-11
 
 ### Fixed
@@ -55,7 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `nommo` command-line tool with `status`, `sub`, `eq`, `light`, `brightness` and `watch`.
 - Universal builds for Apple Silicon and Intel, running on macOS 14 and later.
 
-[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/feroxes/razer-nommo-v2-macos/compare/v1.0.0...v1.1.0
